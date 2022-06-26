@@ -5,7 +5,9 @@
         </div>
         <div class="list">
             <div class="item" v-for="(todo, index) in todos">
-                {{ todo.text }}
+                <button class="btn-done" @click="doneItem(index)" v-bind:class="{ done: todo.done }">
+                    {{ todo.text }}
+                </button>
                 <button class="remove" @click="removeItem(index)">
                     <fas icon="trash"></fas>
                 </button>
@@ -60,6 +62,9 @@ export default defineComponent({
         },
         removeItem(index: number) {
             this.todos.splice(index, 1);
+        },
+        doneItem(index: number) {
+            this.todos[index].done = this.todos[index].done === true ? false : true;
         }
     }
 });
@@ -103,6 +108,24 @@ export default defineComponent({
             border: #41B883;
             border-style: solid;
             border-radius: 5px;
+        }
+
+        .btn-done {
+            background: none;
+            border: none;
+            color: var(--color-text);
+            font-size: 15px;
+            cursor: pointer;
+
+            &:hover {
+                color: white;
+                transition: 0.2s;
+            }
+        }
+
+        .done {
+            text-decoration: line-through 2px;
+            color: #808080;
         }
 
         .remove {
