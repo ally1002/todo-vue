@@ -4,8 +4,11 @@
             <input type="text" class="add" v-model="newTodo" @keyup.enter="insertTask">
         </div>
         <div class="list">
-            <div class="item" v-for="todo in todos">
+            <div class="item" v-for="(todo, index) in todos">
                 {{ todo.text }}
+                <button class="remove" @click="removeItem(index)">
+                    <fas icon="trash"></fas>
+                </button>
             </div>
         </div>
     </div>
@@ -55,6 +58,9 @@ export default defineComponent({
             this.idNewTodo++
             this.newTodo = '';
         },
+        removeItem(index: number) {
+            this.todos.splice(index, 1);
+        }
     }
 });
 </script>
@@ -103,6 +109,8 @@ export default defineComponent({
             color: var(--color-text);
             background: none;
             border: none;
+            float: right;
+            padding: 5px;
             cursor: pointer;
 
             &:hover {
