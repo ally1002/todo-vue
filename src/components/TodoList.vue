@@ -1,15 +1,19 @@
 <template>
     <div class="screen">
         <div class="todo">
-            <input type="text" class="add" v-model="newTodo" @keyup.enter="insertTask">
+            <input type="text" class="add" v-model="newTodo" @keyup.enter="insertTask" placeholder="Write a task">
         </div>
         <div class="list">
             <div class="item" v-for="(todo, index) in todos">
-                <button class="btn-done" @click="doneItem(index)" v-bind:class="{ done: todo.done }">
+                <button class="btn-done" @click="doneItem(todo)" v-bind:class="{ done: todo.done }" v-if="!todo.edit">
                     {{ todo.text }}
                 </button>
-                <button class="remove" @click="removeItem(index)">
+                <input type="text" v-else v-model="editingText" @keyup.enter="doneEdit(todo)">
+                <button class="icon-right" @click="removeItem(index)">
                     <fas icon="trash"></fas>
+                </button>
+                <button class="icon-right" @click="editItem(todo)">
+                    <fas icon="pencil"></fas>
                 </button>
             </div>
         </div>
@@ -26,21 +30,26 @@ export default defineComponent({
         return {
             newTodo: <string>'',
             idNewTodo: <number>4,
+            beforeEdit: '',
+            editingText: '',
             todos: [
                 {
                     id: 1,
                     text: "Learn Vue",
-                    done: false
+                    done: false,
+                    edit: false
                 },
                 {
                     id: 2,
                     text: "Learn TypeScript",
-                    done: false
+                    done: false,
+                    edit: false
                 },
                 {
                     id: 3,
                     text: "Learn Vuex",
-                    done: false
+                    done: false,
+                    edit: false
                 }
             ]
         }
@@ -54,7 +63,8 @@ export default defineComponent({
             this.todos.push({
                 id: <number>this.idNewTodo,
                 text: <string>this.newTodo,
-                done: <boolean>false
+                done: <boolean>false,
+                edit: <boolean>false
             });
 
             this.idNewTodo++
@@ -63,8 +73,20 @@ export default defineComponent({
         removeItem(index: number) {
             this.todos.splice(index, 1);
         },
-        doneItem(index: number) {
-            this.todos[index].done = this.todos[index].done === true ? false : true;
+        doneItem(todo: any) {
+            todo.done = todo.done === true ? false : true;
+        },
+        editItem(todo: any) {
+            todo.edit = todo.edit === true ? false : true
+        },
+        doneEdit(todo: any) {
+            this.beforeEdit = todo.text;
+            if ( this.editingText.trim() == '') {
+                this.editingText = this.beforeEdit;
+            }
+
+            todo.text = this.editingText;
+            todo.edit = false;
         }
     }
 });
@@ -128,7 +150,7 @@ export default defineComponent({
             color: #808080;
         }
 
-        .remove {
+        .icon-right {
             color: var(--color-text);
             background: none;
             border: none;
