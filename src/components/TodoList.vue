@@ -8,7 +8,8 @@
                 <button class="btn-done" @click="doneItem(todo)" v-bind:class="{ done: todo.done }" v-if="!todo.edit">
                     {{ todo.text }}
                 </button>
-                <input type="text" v-else v-model="editingText" @keyup.enter="doneEdit(todo)">
+                <input type="text" v-else v-model="editingText" @blur="doneEdit(todo)" @keyup.enter="doneEdit(todo)"
+                    @keyup.esc="cancelEdit(todo)">
                 <button class="icon-right" @click="removeItem(index)">
                     <fas icon="trash"></fas>
                 </button>
@@ -30,8 +31,8 @@ export default defineComponent({
         return {
             newTodo: <string>'',
             idNewTodo: <number>4,
-            beforeEdit: '',
-            editingText: '',
+            beforeEdit: <string>'',
+            editingText: <string>'',
             todos: [
                 {
                     id: 1,
@@ -77,15 +78,24 @@ export default defineComponent({
             todo.done = todo.done === true ? false : true;
         },
         editItem(todo: any) {
-            todo.edit = todo.edit === true ? false : true
+            todo.edit = todo.edit === true ? false : true;
+            this.editingText = todo.text;
+            this.beforeEdit = todo.text;
+        },
+        cancelEdit(todo: any) {
+            this.beforeEdit = '';
+            this.editingText = '';
+            todo.edit = false;
         },
         doneEdit(todo: any) {
             this.beforeEdit = todo.text;
-            if ( this.editingText.trim() == '') {
+            if (this.editingText.trim() == '') {
                 this.editingText = this.beforeEdit;
             }
 
             todo.text = this.editingText;
+            this.beforeEdit = '';
+            this.editingText = '';
             todo.edit = false;
         }
     }
