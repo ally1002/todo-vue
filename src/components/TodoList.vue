@@ -8,8 +8,8 @@
                 <button class="btn-done" @click="doneItem(todo)" v-bind:class="{ done: todo.done }" v-if="!todo.edit">
                     {{ todo.text }}
                 </button>
-                <input type="text" v-else v-model="editingText" @blur="doneEdit(todo)" @keyup.enter="doneEdit(todo)"
-                    @keyup.esc="cancelEdit(todo)">
+                <input class="edit" type="text" v-else v-model="editingText" @blur="doneEdit(todo)"
+                    @keyup.enter="doneEdit(todo)" @keyup.esc="cancelEdit(todo)" v-focus>
                 <button class="icon-right" @click="removeItem(index)">
                     <fas icon="trash"></fas>
                 </button>
@@ -23,7 +23,6 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-
 
 export default defineComponent({
     name: 'todo-list',
@@ -48,11 +47,18 @@ export default defineComponent({
                 },
                 {
                     id: 3,
-                    text: "Learn Vuex",
+                    text: "Learn CSS",
                     done: false,
                     edit: false
                 }
             ]
+        }
+    },
+    directives: {
+        focus: {
+            mounted(el) {
+                el.focus()
+            }
         }
     },
     methods: {
@@ -142,36 +148,45 @@ export default defineComponent({
             border-radius: 5px;
         }
 
-        .btn-done {
+        .edit {
             background: none;
             border: none;
-            color: var(--color-text);
+            color: white;
             font-size: 15px;
-            cursor: pointer;
-
-            &:hover {
-                color: white;
-                transition: 0.2s;
-            }
+            margin-left: 5px;
+            width: 95%;
         }
+    }
 
-        .done {
-            text-decoration: line-through 2px;
-            color: #808080;
+    .btn-done {
+        background: none;
+        border: none;
+        color: var(--color-text);
+        font-size: 15px;
+        cursor: pointer;
+
+        &:hover {
+            color: white;
+            transition: 0.2s;
         }
+    }
 
-        .icon-right {
-            color: var(--color-text);
-            background: none;
-            border: none;
-            float: right;
-            padding: 5px;
-            cursor: pointer;
+    .done {
+        text-decoration: line-through 2px;
+        color: #808080;
+    }
 
-            &:hover {
-                color: white;
-                transition: 0.2s;
-            }
+    .icon-right {
+        color: var(--color-text);
+        background: none;
+        border: none;
+        float: right;
+        padding: 5px;
+        cursor: pointer;
+
+        &:hover {
+            color: white;
+            transition: 0.2s;
         }
     }
 }
